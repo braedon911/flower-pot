@@ -4,29 +4,35 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    #region behaviors, children, tools
     Actor actor;
     CollisionBox collisionBox;
     Animator animator;
-
-    private StateMachine stateMachine;
+    GameObject rootsObject;
+    StateMachine stateMachine;
+    #endregion
 
     #region physics values
-
-
     float velocity_x = 0f;
     float velocity_y = 0f;
 
     float max_velocity_x = 8f;
     float max_velocity_y = 8f;
-    
+    [SerializeField]
     float drag = 1f;
+    [SerializeField]
     float gravity = 1f;
+    [SerializeField]
+    float strafeSpeed = .25f;
+    [SerializeField]
     float walkSpeed = 1f;
 
+    [SerializeField]
     int maxGrowth = 16;
+    [SerializeField]
     float growthSpeed = .2f;
-
-    float growthPopBoost = 10f;
+    [SerializeField]
+    float growthPopBoost = 50f;
     #endregion
 
     private Actor.CollisionAction resetX;
@@ -46,6 +52,7 @@ public class PlayerController : MonoBehaviour
         actor = GetComponent<Actor>();
         collisionBox = GetComponent<CollisionBox>();
         animator = GetComponent<Animator>();
+        rootsObject = transform.GetChild(0).gameObject;
 
         stateMachine = new StateMachine(StateGround, StateFall, StateGrow);
     }
@@ -93,23 +100,23 @@ public class PlayerController : MonoBehaviour
     #region states
     void StateGround()
     {
-        //get axes of input
-
         //apply movement
         velocity_x += horizontalInput * walkSpeed * Time.deltaTime;
 
         //stop quickly for QoL
         if (horizontalInput == 0f)
         {
-            ChangeAnimation("Run Stop");
-            velocity_x *= .5f * Time.deltaTime;
-            
-            if(actionButtonDown)
+            if(currentAnimation!="Idle") ChangeAnimation("Run Stop");
+            velocity_x *= drag * Time.deltaTime;
+
+            if (actionButtonDown)
             {
                 stateMachine.ChangeState("StateGrow", 0);
             }
         }
+        else if (horizontalInput < 0f) ChangeAnimation("Run Start Left");
         else ChangeAnimation("Run Start");
+
 
         //fall if we are above air
         if (!actor.IsStanding())
@@ -122,6 +129,7 @@ public class PlayerController : MonoBehaviour
     void StateFall()
     {
         velocity_y -= gravity * Time.deltaTime;
+        velocity_x += horizontalInput * strafeSpeed * Time.deltaTime;
 
         //go back to ground movement when we hit the ground
         if (actor.IsStanding())
@@ -142,12 +150,16 @@ public class PlayerController : MonoBehaviour
             //start growing
             case 0:
                 ChangeAnimation("Grow Start");
-                if (stateMachine.stateTimer > 28) stateMachine.ChangeState("StateGrow", 1);
 
-                
+                if (stateMachine.stateTimer > 140) stateMachine.ChangeState("StateGrow", 1);
+
                 break;
             //grow
             case 1:
+                rootsObject.SetActive(true);
+                //do that lovely scaling for our roots
+                rootsObject.transform.localScale = new Vector3(1, -0.125f * distanceToGround, 1);
+
                 if(distanceToGround < maxGrowth && actionButton)
                 {
                     velocity_y = growthSpeed;
@@ -161,19 +173,21 @@ public class PlayerController : MonoBehaviour
                 velocity_y = 0;
 
                 if (actionButtonDown) {
-                    velocity_y += growthPopBoost * Time.deltaTime;
+                    //give our player a little pop when they get off the roots
+                    velocity_y = growthPopBoost * Time.deltaTime;
+                    velocity_x = horizontalInput * growthPopBoost * Time.deltaTime;
                     stateMachine.ChangeState("StateGrow", 3);
                 }
 
-                if (stateMachine.stateTimer > 29) {
-                    ChangeAnimation("Grow");
-                }
                 else ChangeAnimation("Grow Stop");
                 break;
             //exit
             case 3:
+                rootsObject.SetActive(false);
                 if (stateMachine.stateTimer > 29) stateMachine.ChangeState("StateFall");
-                velocity_y -= gravity * Time.deltaTime;
+
+                velocity_y -= gravity * Time.deltaTime * .2f;
+                velocity_x += horizontalInput * walkSpeed * Time.deltaTime;
                 ChangeAnimation("Idle");
                 break;
         }
