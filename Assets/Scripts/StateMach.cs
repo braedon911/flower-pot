@@ -16,9 +16,12 @@ public class StateMachine
     public StateMachine(params State.StateFunction[] _states)
     {
         states = new List<State>();
+        Debug.Log("States created: ");
         foreach (State.StateFunction function in _states)
         {
             State state = new State(function);
+
+            Debug.Log("               " + state.name);
             states.Add(state);
         }
         ChangeState(0);
@@ -43,10 +46,7 @@ public class StateMachine
                 break;
             }
         }
-        if (found == false)
-        {
-            Debug.LogWarning("State change attempted but state " + name + " was not found.");
-        }
+        Debug.Assert(found, "State change attempted but state " + name + " was not found.");
 
     }
     public void Execute()
