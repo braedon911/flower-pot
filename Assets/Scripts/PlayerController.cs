@@ -16,8 +16,8 @@ public class PlayerController : MonoBehaviour
     float velocity_x = 0f;
     float velocity_y = 0f;
 
-    float max_velocity_x = 8f;
-    float max_velocity_y = 8f;
+    float max_velocity_x = 4f;
+    float max_velocity_y = 4f;
     [SerializeField]
     float drag = 1f;
     [SerializeField]
@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
     bool actionButtonDown = false;
     #endregion
 
-    private void Start()
+    private void Awake()
     {
         resetX = () => { velocity_x = 0; };
         resetY = () => { velocity_y = 0; };

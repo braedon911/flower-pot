@@ -14,7 +14,7 @@ public class Actor : Actorsolid
 
     public override bool IsSolid() { return false; }
 
-    void Start()
+    void Awake()
     {
         squishAction = Squish;
         box = gameObject.GetComponent<CollisionBox>();

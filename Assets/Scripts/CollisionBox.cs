@@ -43,7 +43,7 @@ public class CollisionBox : MonoBehaviour
                 break;
             }
             if (box != this) {
-                check = box.PointInBox(checkPosition) || box.PointInBox(dimensions + checkPosition) || box.PointInBox(new Vector2Int(dimensions.x, 0) + checkPosition) || box.PointInBox(new Vector2Int(0, dimensions.y) + checkPosition);
+                check = PlaceMeetingSubcheck(box, checkPosition);
 
                 if (check && qualifier(box)) break;
             }            
@@ -63,7 +63,7 @@ public class CollisionBox : MonoBehaviour
             }
             if (box != this)
             {
-                check = box.PointInBox(checkPosition) || box.PointInBox(dimensions + checkPosition) || box.PointInBox(new Vector2Int(dimensions.x, 0) + checkPosition) || box.PointInBox(new Vector2Int(0, dimensions.y) + checkPosition);
+                check = PlaceMeetingSubcheck(box, checkPosition);
                 if (check) break;
             }
         }
@@ -83,11 +83,18 @@ public class CollisionBox : MonoBehaviour
             }
             if (box != this)
             {
-                check = box.PointInBox(checkPosition) || box.PointInBox(dimensions + checkPosition) || box.PointInBox(new Vector2Int(dimensions.x, 0) + checkPosition) || box.PointInBox(new Vector2Int(0, dimensions.y) + checkPosition);
+                check = PlaceMeetingSubcheck(box, checkPosition);
                 if (check) return box;
             }
         }
         return null;
+    }
+    private bool PlaceMeetingSubcheck(CollisionBox box, Vector2Int checkPosition)
+    {
+        return box.PointInBox(checkPosition) ||
+                    box.PointInBox(dimensions + checkPosition) ||
+                    box.PointInBox(new Vector2Int(dimensions.x, 0) + checkPosition) ||
+                    box.PointInBox(new Vector2Int(0, dimensions.y) + checkPosition);
     }
     private void FixedUpdate()
     {
