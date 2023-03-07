@@ -5,11 +5,13 @@ using UnityEngine.Events;
 
 public class StartScreen : MonoBehaviour
 {
+    bool ready = true;
     public UnityEvent startActivated;
     void Update()
     {
-        if(Input.GetButtonDown("Fire1"))
+        if(ready && Input.GetButtonDown("Fire1"))
         {
+            ready = false;
             startActivated.Invoke();
         }
     }

@@ -22,9 +22,9 @@ public class RoomManager : MonoBehaviour
             yield return null;
         }
     }
-    private void Start()
+    void Start()
     {
-        switch(SceneManager.GetActiveScene().name)
+        switch (SceneManager.GetActiveScene().name)
         {
             case "Persistent":
                 SceneManager.LoadScene("Start");
