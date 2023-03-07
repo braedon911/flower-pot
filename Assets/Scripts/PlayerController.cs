@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ActorSolidSystem;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,23 +18,25 @@ public class PlayerController : MonoBehaviour
     float velocity_x = 0f;
     float velocity_y = 0f;
 
-    float max_velocity_x = 4f;
-    float max_velocity_y = 4f;
+    float max_velocity_x = 3f;
+    float max_velocity_y = 6f;
     [SerializeField]
-    float drag = 1f;
+    float drag = .5f;
     [SerializeField]
-    float gravity = 1f;
+    float gravity = .8f;
     [SerializeField]
-    float strafeSpeed = .25f;
+    float strafeSpeed = .1f;
     [SerializeField]
-    float walkSpeed = 1f;
+    float walkSpeed = .2f;
 
     [SerializeField]
     int maxGrowth = 16;
     [SerializeField]
-    float growthSpeed = .2f;
+    float growthSpeed = 2f;
     [SerializeField]
-    float growthPopBoost = 50f;
+    float growthPopBoost = .2f;
+    [SerializeField]
+    float gravityMod = .5f;
     #endregion
 
     private Actor.CollisionAction resetX;
@@ -59,12 +63,13 @@ public class PlayerController : MonoBehaviour
 
     void ApplyVelocityAndDrag()
     {
-        actor.MoveX(velocity_x, resetX);
-        actor.MoveY(velocity_y, resetY);
-        velocity_x = Mathf.Lerp(velocity_x, 0f, drag*Time.deltaTime);
+        velocity_x = Mathf.Lerp(velocity_x, 0f, drag);
 
         velocity_x = Mathf.Clamp(velocity_x, -1 * max_velocity_x, max_velocity_x);
         velocity_y = Mathf.Clamp(velocity_y, -1 * max_velocity_y, max_velocity_y);
+
+        actor.MoveX(velocity_x, resetX);
+        actor.MoveY(velocity_y, resetY);
     }
     int GetDistanceToGround()
     {
@@ -92,6 +97,15 @@ public class PlayerController : MonoBehaviour
         if (name != currentAnimation) { animator.Play(name); currentAnimation = name; }
     }
 
+    public void Suspend()
+    {
+        stateMachine.Suspend();
+    }
+    public void Unsuspend()
+    {
+        stateMachine.Resume();
+    }
+
     private void Update()
     {
         UpdateControlChecks();
@@ -100,23 +114,28 @@ public class PlayerController : MonoBehaviour
     #region states
     void StateGround()
     {
-        //apply movement
-        velocity_x += horizontalInput * walkSpeed * Time.deltaTime;
-
+        if(actionButtonDown)
+        {
+            velocity_x = drag*drag;
+            stateMachine.ChangeState("StateGrow", 0);
+        }
         //stop quickly for QoL
         if (horizontalInput == 0f)
         {
-            if(currentAnimation!="Idle") ChangeAnimation("Run Stop");
-            velocity_x *= drag * Time.deltaTime;
+            if (currentAnimation != "Idle") ChangeAnimation("Run Stop");
+            velocity_x *= drag;
 
-            if (actionButtonDown)
-            {
-                stateMachine.ChangeState("StateGrow", 0);
-            }
         }
-        else if (horizontalInput < 0f) ChangeAnimation("Run Start Left");
-        else ChangeAnimation("Run Start");
-
+        else if (horizontalInput < 0f)
+        {
+            ChangeAnimation("Run Start Left");
+            velocity_x += horizontalInput * walkSpeed;
+        }
+        else
+        {
+            ChangeAnimation("Run Start");
+            velocity_x += horizontalInput * walkSpeed;
+        }
 
         //fall if we are above air
         if (!actor.IsStanding())
@@ -128,8 +147,8 @@ public class PlayerController : MonoBehaviour
     }
     void StateFall()
     {
-        velocity_y -= gravity * Time.deltaTime;
-        velocity_x += horizontalInput * strafeSpeed * Time.deltaTime;
+        velocity_y -= gravity;
+        velocity_x += horizontalInput * strafeSpeed;
 
         //go back to ground movement when we hit the ground
         if (actor.IsStanding())
@@ -141,8 +160,6 @@ public class PlayerController : MonoBehaviour
     }
     void StateGrow()
     {
-        velocity_x = 0;
-
         //float verticalInput = Input.GetAxis("Vertical");
         int distanceToGround = GetDistanceToGround();
 
@@ -150,12 +167,13 @@ public class PlayerController : MonoBehaviour
             //start growing
             case 0:
                 ChangeAnimation("Grow Start");
-
-                if (stateMachine.stateTimer > 140) stateMachine.ChangeState("StateGrow", 1);
+                velocity_x = 0;
+                if (stateMachine.stateTimer > 5) stateMachine.ChangeState("StateGrow", 1);
 
                 break;
             //grow
             case 1:
+                velocity_x = 0;
                 rootsObject.SetActive(true);
                 //do that lovely scaling for our roots
                 rootsObject.transform.localScale = new Vector3(1, -0.125f * distanceToGround, 1);
@@ -170,12 +188,15 @@ public class PlayerController : MonoBehaviour
                 break;
             //stop
             case 2:
+                velocity_x = 0;
                 velocity_y = 0;
-
+                actor.OverrideVelocity();
+                rootsObject.transform.localScale = new Vector3(1, -0.125f * distanceToGround, 1);
+                rootsObject.transform.localScale = new Vector3(1, -0.125f * distanceToGround, 1);
                 if (actionButtonDown) {
                     //give our player a little pop when they get off the roots
-                    velocity_y = growthPopBoost * Time.deltaTime;
-                    velocity_x = horizontalInput * growthPopBoost * Time.deltaTime;
+                    velocity_y += growthPopBoost;
+                    velocity_x = horizontalInput * growthPopBoost;
                     stateMachine.ChangeState("StateGrow", 3);
                 }
 
@@ -184,10 +205,10 @@ public class PlayerController : MonoBehaviour
             //exit
             case 3:
                 rootsObject.SetActive(false);
-                if (stateMachine.stateTimer > 29) stateMachine.ChangeState("StateFall");
+                if (stateMachine.stateTimer > 5) stateMachine.ChangeState("StateFall");
 
-                velocity_y -= gravity * Time.deltaTime * .2f;
-                velocity_x += horizontalInput * walkSpeed * Time.deltaTime;
+                velocity_y -= gravity * gravityMod;
+                velocity_x += horizontalInput * strafeSpeed * growthPopBoost;
                 ChangeAnimation("Idle");
                 break;
         }
