@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviour
             case 0:
                 ChangeAnimation("Grow Start");
                 velocity_x = 0;
-                if (stateMachine.stateTimer > 5) stateMachine.ChangeState("StateGrow", 1);
+                if (stateMachine.stateTimer > 11) stateMachine.ChangeState("StateGrow", 1);
 
                 break;
             //grow
