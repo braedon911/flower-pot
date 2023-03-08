@@ -133,13 +133,14 @@ GameObject:
   m_Component:
   - component: {fileID: 987565455}
   - component: {fileID: 987565454}
+  - component: {fileID: 987565456}
   m_Layer: 0
   m_Name: Room Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &987565454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,6 +174,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &987565456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987565453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38757f6e81fd5dd4ab279d04128a6b00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1046890668
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -268,7 +281,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Frame Controller
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 421345642861796087, guid: 2b2267be84ac52c4c8e51427c9130008, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2b2267be84ac52c4c8e51427c9130008, type: 3}
 --- !u!1001 &1260343657
 PrefabInstance:
@@ -327,3 +341,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
+--- !u!1 &2129104834 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6546519413877885015, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
+  m_PrefabInstance: {fileID: 1260343657}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2129104840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129104834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7a81d4b7c172ce40a85e20462f7a602, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerToFollow: {fileID: 0}
