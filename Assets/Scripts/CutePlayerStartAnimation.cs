@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class CutePlayerStartAnimation : MonoBehaviour
 {
@@ -11,6 +11,8 @@ public class CutePlayerStartAnimation : MonoBehaviour
     public int animationLength;
     public int transitionFrame = 6;
     public GameObject rootsObject;
+
+    public UnityEvent finishedAnimation = new UnityEvent();
     public void DoAnimation()
     {
         StartCoroutine("Animation");
@@ -42,6 +44,6 @@ public class CutePlayerStartAnimation : MonoBehaviour
             timer++;
             yield return null;
         }
-        SceneManager.LoadScene("Room1");
+        finishedAnimation.Invoke();
     }
 }

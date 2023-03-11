@@ -75,12 +75,12 @@ public class StateMachine
     }
     public void Suspend()
     {
-        Debug.Assert(isSuspended, $"Machine {this} already suspended but suspend called anyway.");
+        //Debug.Assert(isSuspended, $"Machine {this} already suspended but suspend called anyway.");
         isSuspended = true;
     }
     public void Resume()
     {
-        Debug.Assert(!isSuspended, $"Machine {this} not suspended but resume called anyway.");
+        //Debug.Assert(!isSuspended, $"Machine {this} not suspended but resume called anyway.");
         isSuspended = false;
     }
     public void Execute()

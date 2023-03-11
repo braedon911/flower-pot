@@ -9,7 +9,7 @@ namespace ActorSolidSystem
         void Awake()
         {
             //QualitySettings.vSyncCount = 0;
-            Application.targetFrameRate = 15;
+            Application.targetFrameRate = 30;
         }
     }
 

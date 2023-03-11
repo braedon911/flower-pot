@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace ActorSolidSystem
 {
@@ -26,6 +27,11 @@ namespace ActorSolidSystem
     static class BoxSystem
     {
         public static List<CollisionBox> boxList = new List<CollisionBox>();
+
+        public static void CullNullBoxes()
+        {
+            boxList.RemoveAll((CollisionBox box) => {return box == null; });
+        }
     }
 
 }

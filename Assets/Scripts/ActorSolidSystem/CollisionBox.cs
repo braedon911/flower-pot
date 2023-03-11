@@ -43,17 +43,17 @@ namespace ActorSolidSystem
             bool check = false;
             foreach (CollisionBox box in BoxSystem.boxList)
             {
-                if (box == null)
+                if(box == null)
                 {
-                    BoxSystem.boxList.Remove(box);
-                    break;
+                    cullingRequested = true;
                 }
-                if (box != this)
+                else if (box != this)
                 {
                     check = PlaceMeetingSubcheck(box, checkPosition);
                     if (check && qualifier(box)) break;
                 }
             }
+            if (cullingRequested) RequestCulling();
             return check;
         }
         public bool PlaceMeeting(int x_check, int y_check)
@@ -64,8 +64,7 @@ namespace ActorSolidSystem
             {
                 if (box == null)
                 {
-                    BoxSystem.boxList.Remove(box);
-                    break;
+                    cullingRequested = true;
                 }
                 if (box != this)
                 {
@@ -73,27 +72,40 @@ namespace ActorSolidSystem
                     if (check) break;
                 }
             }
+            if (cullingRequested) RequestCulling();
             return check;
         }
         //this is like PlaceMeeting except that it returns the first collision box found
         public CollisionBox InstancePlace(int x_check, int y_check)
         {
             Vector2Int checkPosition = new Vector2Int(x_check, y_check);
-            bool check = false;
+            bool check;
             foreach (CollisionBox box in BoxSystem.boxList)
             {
                 if (box == null)
                 {
-                    BoxSystem.boxList.Remove(box);
-                    break;
+                    cullingRequested = true;
                 }
                 if (box != this)
                 {
                     check = PlaceMeetingSubcheck(box, checkPosition);
+                    if (cullingRequested) RequestCulling();
                     if (check) return box;
                 }
             }
+            if (cullingRequested) RequestCulling();
             return null;
+        }
+
+        //todo: make null box culling asynchronous and reset cullingRequested on completing of the async task
+        bool cullingRequested = false;
+        void RequestCulling()
+        {
+            if (!cullingRequested)
+            {
+                BoxSystem.CullNullBoxes();
+                cullingRequested = false;
+            }
         }
         private bool PlaceMeetingSubcheck(CollisionBox box, Vector2Int checkPosition)
         {

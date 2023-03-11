@@ -99,11 +99,18 @@ public class PlayerController : MonoBehaviour
 
     public void Suspend()
     {
+        animator.speed = 0;
         stateMachine.Suspend();
+    }
+    IEnumerator Unsuspend_()
+    {
+        yield return new WaitForSeconds(.1f);
+        stateMachine.Resume();
     }
     public void Unsuspend()
     {
-        stateMachine.Resume();
+        animator.speed = 1;
+        StartCoroutine(Unsuspend_());
     }
 
     private void Update()
