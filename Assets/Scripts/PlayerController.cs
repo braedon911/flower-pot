@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ActorSolidSystem;
-
+using StateMachines;
 
 public class PlayerController : MonoBehaviour
 {

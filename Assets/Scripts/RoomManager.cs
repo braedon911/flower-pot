@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -10,11 +11,13 @@ public class RoomManager : MonoBehaviour
     [Header("Room transition events")]
     public UnityEvent roomChangeBegin = new UnityEvent();
     public UnityEvent roomChangeEnd = new UnityEvent();
-    [Range(0, 90)]
-    public int transition_timer;
+    [Range(0, 90), SerializeField]
+    int transition_timer;
     //life is pain. i hate.
 
     const string firstRoom = "0,0";
+    const string overworld = "Overworld";
+    const string startScreen = "Start";
 
     string Room_current { get { return GetNameFromCoord(room_coord_x, room_coord_y); } } 
     int room_coord_x = 1;
@@ -23,18 +26,19 @@ public class RoomManager : MonoBehaviour
     GameObject player;
     GameObject cam;
     //transition from one room to another
-    IEnumerator Transition()
+    async void Transition()
     {
         roomChangeBegin.Invoke();
         for (int i = 0; i < transition_timer; i++)
         {
-            yield return null;
+            await Task.Yield();
+            
         }
         roomChangeEnd.Invoke();
     }
     void Start()
     {
-        SceneManager.LoadScene("Start");
+        SceneManager.LoadScene(startScreen);
     }
     void Awake()
     {
@@ -46,17 +50,14 @@ public class RoomManager : MonoBehaviour
         FindPlayer(scene, mode);
         switch (scene.name)
         {
-            case "Start":
+            case startScreen:
                 GameObject.Find("Tree Guy Prop")?.GetComponent<CutePlayerStartAnimation>().finishedAnimation.AddListener(LoadOverworld);
                 break;
-            case "Overworld":
+            case overworld:
                 PlayerController playerController = player.GetComponent<PlayerController>();
                 roomChangeBegin.AddListener(playerController.Suspend);
                 roomChangeEnd.AddListener(playerController.Unsuspend);
                 playerController.Suspend();
-                break;
-            case firstRoom:
-                
                 break;
         }
     }
@@ -73,7 +74,7 @@ public class RoomManager : MonoBehaviour
         Debug.Log("Overworld loading");
 
         SceneManager.LoadScene(firstRoom, LoadSceneMode.Single);
-        SceneManager.LoadScene("Overworld", LoadSceneMode.Additive);
+        SceneManager.LoadScene(overworld, LoadSceneMode.Additive);
     }
     void Update()
     {
@@ -90,7 +91,7 @@ public class RoomManager : MonoBehaviour
             if (delta_x != 0 || delta_y != 0)
             {
                 LoadRoom(room_coord_x, room_coord_y);
-                StartCoroutine("Transition");
+                Transition();
             }
         }
     }
