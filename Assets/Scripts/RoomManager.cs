@@ -15,7 +15,7 @@ public class RoomManager : MonoBehaviour
     int transition_timer;
     //life is pain. i hate.
 
-    const string firstRoom = "0,0";
+    const string firstRoom = "_0_1";
     const string overworld = "Overworld";
     const string startScreen = "Start";
 
@@ -32,7 +32,6 @@ public class RoomManager : MonoBehaviour
         for (int i = 0; i < transition_timer; i++)
         {
             await Task.Yield();
-            
         }
         roomChangeEnd.Invoke();
     }
@@ -97,7 +96,7 @@ public class RoomManager : MonoBehaviour
     }
     string GetNameFromCoord(int x, int y)
     {
-        return $"{x},{y}";
+        return $"_{x}_{y}";
     }
     void LoadRoom(int x, int y)
     {

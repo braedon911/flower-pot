@@ -227,6 +227,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6546519413877885012, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6546519413877885015, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -237,11 +241,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6546519413877885099, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 6546519413877885099, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 6546519413877885099, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -335,15 +339,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9119687457542634752, guid: d1dfe34de3135414cadc996064fce557, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.411966
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9119687457542634752, guid: d1dfe34de3135414cadc996064fce557, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -28.932663
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9119687457542634752, guid: d1dfe34de3135414cadc996064fce557, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.076848
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9119687457542634752, guid: d1dfe34de3135414cadc996064fce557, type: 3}
       propertyPath: m_LocalRotation.w
@@ -373,9 +377,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9119687457542634753, guid: d1dfe34de3135414cadc996064fce557, type: 3}
+      propertyPath: transition_timer
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 9119687457542634754, guid: d1dfe34de3135414cadc996064fce557, type: 3}
       propertyPath: m_Name
       value: Room Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119687457542634754, guid: d1dfe34de3135414cadc996064fce557, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d1dfe34de3135414cadc996064fce557, type: 3}
