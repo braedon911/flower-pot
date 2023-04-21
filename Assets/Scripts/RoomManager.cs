@@ -1,6 +1,9 @@
+using LDtkUnity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -14,17 +17,22 @@ public class RoomManager : MonoBehaviour
     [Range(0, 90), SerializeField]
     int transition_timer;
     //life is pain. i hate.
-
+    const string anchorRoom = "_0_0";
     const string firstRoom = "_0_1";
     const string overworld = "Overworld";
     const string startScreen = "Start";
 
-    string Room_current { get { return GetNameFromCoord(room_coord_x, room_coord_y); } } 
-    int room_coord_x = 1;
-    int room_coord_y = 0;
-
+    static int anchor_x = 0;
+    static int anchor_y = 128;
+    
     GameObject player;
-    GameObject cam;
+    private RoomGridTracker playerGridTracker;
+
+    public static Vector2Int WorldToRoomCoords(Vector3 worldCoords)
+    {        
+        return new Vector2Int((Mathf.FloorToInt(worldCoords.x)-anchor_x)/128, Mathf.Abs((Mathf.FloorToInt(worldCoords.y) - anchor_y - 128) /128));
+    }
+    
     //transition from one room to another
     async void Transition()
     {
@@ -37,7 +45,25 @@ public class RoomManager : MonoBehaviour
     }
     void Start()
     {
+        AsyncOperation sceneLoader = SceneManager.LoadSceneAsync(anchorRoom, LoadSceneMode.Additive);
+        sceneLoader.completed += EstablishAnchor;
+    }
+    public void RoomChangeRoutine()
+    {
+        LoadRoom(playerGridTracker.X, playerGridTracker.Y);
+        Transition();
+    }
+    void EstablishAnchor(AsyncOperation operation)
+    {
+        Scene anchorRoomScene = SceneManager.GetSceneByName(anchorRoom);
+        SceneManager.SetActiveScene(anchorRoomScene);
+        LDtkComponentLevel level = GameObject.FindObjectOfType<LDtkComponentLevel>();
+        SceneManager.UnloadSceneAsync(anchorRoomScene);
+        Vector2Int anchorRoomCoords = new Vector2Int((int)level.BorderRect.position.x, (int)level.BorderRect.position.y);
+        anchor_x = anchorRoomCoords.x;
+        anchor_y = anchorRoomCoords.y;
         SceneManager.LoadScene(startScreen);
+        Debug.Log($"Anchor established at {anchor_x}, {anchor_y}");
     }
     void Awake()
     {
@@ -45,8 +71,11 @@ public class RoomManager : MonoBehaviour
     }
     void SceneChecker(Scene scene, LoadSceneMode mode)
     {
-        FindCamera(scene, mode);
-        FindPlayer(scene, mode);
+        if (FindPlayer(scene, mode))
+        {
+            playerGridTracker = player.GetComponent<RoomGridTracker>();
+            playerGridTracker.roomChange.AddListener(RoomChangeRoutine);
+        }
         switch (scene.name)
         {
             case startScreen:
@@ -56,17 +85,14 @@ public class RoomManager : MonoBehaviour
                 PlayerController playerController = player.GetComponent<PlayerController>();
                 roomChangeBegin.AddListener(playerController.Suspend);
                 roomChangeEnd.AddListener(playerController.Unsuspend);
-                playerController.Suspend();
+                //playerController.Suspend();
                 break;
         }
     }
-    void FindPlayer(Scene scene, LoadSceneMode mode)
+    bool FindPlayer(Scene scene, LoadSceneMode mode)
     {
         player = GameObject.FindGameObjectWithTag("Player");
-    }
-    void FindCamera(Scene scene, LoadSceneMode mode)
-    {
-        cam = GameObject.FindGameObjectWithTag("MainCamera");
+        return player != null;
     }
     public void LoadOverworld()
     {
@@ -75,34 +101,16 @@ public class RoomManager : MonoBehaviour
         SceneManager.LoadScene(firstRoom, LoadSceneMode.Single);
         SceneManager.LoadScene(overworld, LoadSceneMode.Additive);
     }
-    void Update()
-    {
-        if (player != null)
-        {
-            int room_coord_x_previous = room_coord_x;
-            int room_coord_y_previous = room_coord_y;
-            room_coord_x = ((int)player.transform.position.x - 64) / (int)128;
-            room_coord_y = ((int)player.transform.position.y - 64) / (int)128;
-
-            int delta_x = room_coord_x - room_coord_x_previous;
-            int delta_y = room_coord_y - room_coord_y_previous;
-
-            if (delta_x != 0 || delta_y != 0)
-            {
-                LoadRoom(room_coord_x, room_coord_y);
-                Transition();
-            }
-        }
-    }
     string GetNameFromCoord(int x, int y)
     {
         return $"_{x}_{y}";
     }
     void LoadRoom(int x, int y)
     {
-        string previous = Room_current;
         string roomToLoad = GetNameFromCoord(x,y);
-        SceneManager.LoadScene(roomToLoad, LoadSceneMode.Additive);
-        SceneManager.UnloadSceneAsync(previous);
+        if (!SceneManager.GetSceneByName(roomToLoad).isLoaded)
+        {
+            SceneManager.LoadScene(roomToLoad, LoadSceneMode.Additive);
+        }
     }
 }

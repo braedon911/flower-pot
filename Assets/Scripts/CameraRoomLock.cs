@@ -10,17 +10,19 @@ public class CameraRoomLock : MonoBehaviour
 {
 	GameObject playerToFollow;
 	StateMachine stateMachine;
-
 	[SerializeField, Range(0,2000)] int scrollSpeed = 1000;
-
+	[SerializeField] RoomGridTracker roomGridTracker;
 	void Update()
 	{
 		stateMachine.Execute();
     }
 	//only pans up down left or right
-	async void CameraPan(Vector3 newPosition)
+	bool CameraPanIsRunning = false;
+	Vector3 cameraOffset = 64*(Vector3.up + Vector3.right);
+	IEnumerator CameraPan(Vector3 newPosition)
 	{
-		Vector3 originalPosition = transform.position;
+		CameraPanIsRunning = true;
+        Vector3 originalPosition = transform.position;
 		
 		if (originalPosition.x != newPosition.x)
 		{
@@ -31,9 +33,10 @@ public class CameraRoomLock : MonoBehaviour
 			{
 				transform.position += Vector3.right * dir;
 				movement -= dir;
-				await Task.Delay(speedCoef);
+				yield return new WaitForSeconds(speedCoef);
 			}
 		}
+		//this section is just a rote revision of the horizontal movement code
 		else if (originalPosition.y != newPosition.y)
 		{
             int movement = Mathf.RoundToInt(newPosition.y - originalPosition.y);
@@ -43,15 +46,15 @@ public class CameraRoomLock : MonoBehaviour
             {
                 transform.position += Vector3.up * dir;
                 movement -= dir;
-                await Task.Delay(speedCoef);
+                yield return new WaitForSeconds(speedCoef);
             }
         }
-	}
+        CameraPanIsRunning = false;
+    }
 	void Awake(){
 		SceneManager.sceneLoaded += FindPlayer;
 		stateMachine = new StateMachine(PlayerNull, PlayerExists);
-	}
-
+    }
 	void FindPlayer(Scene scene, LoadSceneMode mode){
 		playerToFollow = GameObject.Find("Tree Guy") ?? null;
 		if (playerToFollow != null) stateMachine.ChangeState(PlayerExists);
@@ -60,13 +63,14 @@ public class CameraRoomLock : MonoBehaviour
 	void PlayerNull()
 	{
 
-	}
+    }
 	void PlayerExists()
 	{
-        Vector3 playerPosition = playerToFollow.transform.position;
-        int mod_x = ((int)playerPosition.x - 64) / 128;
-        int mod_y = ((int)playerPosition.y + 64) / 128;
-        //the /128 *128 seems redundant but it's a rounding thing for the room positions
-        //CameraPan(new Vector3(mod_x * 128, mod_y * 128, transform.position.z));
+		Vector2Int roomPosition = roomGridTracker.Position;
+		Vector2Int roomPositionPlayer = playerToFollow.GetComponent<RoomGridTracker>().Position;
+		if (roomPosition != roomPositionPlayer && !CameraPanIsRunning)
+		{
+			StartCoroutine(CameraPan(cameraOffset + (Vector3)(Vector2)(roomPosition*128)));
+		}
     }
 }

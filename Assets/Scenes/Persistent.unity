@@ -227,6 +227,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6108519989729009647, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
+      propertyPath: roomGridTracker
+      value: 
+      objectReference: {fileID: 1692329123}
     - target: {fileID: 6546519413877885012, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -326,6 +330,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1692329116 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6546519413877885015, guid: 039bbdd734e595643800afd0076cc38a, type: 3}
+  m_PrefabInstance: {fileID: 1260343657}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1692329123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692329116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87cf53311b216d34c90e1095c47b20f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomChange:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &9119687457178448015
 PrefabInstance:
   m_ObjectHideFlags: 0
