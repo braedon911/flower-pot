@@ -16,6 +16,7 @@ public class RoomManager : MonoBehaviour
     public UnityEvent roomChangeEnd = new UnityEvent();
     [Range(0, 90), SerializeField]
     int transition_timer;
+    public int TransitionTimer { get { return transition_timer; } set { transition_timer = value; } }
     //life is pain. i hate.
     const string anchorRoom = "_0_0";
     const string firstRoom = "_0_1";
@@ -32,7 +33,10 @@ public class RoomManager : MonoBehaviour
     {        
         return new Vector2Int((Mathf.FloorToInt(worldCoords.x)-anchor_x)/128, Mathf.Abs((Mathf.FloorToInt(worldCoords.y) - anchor_y - 128) /128));
     }
-    
+    public static Vector3 RoomToWorldCoords(Vector2Int roomCoords)
+    {
+        return new Vector3((roomCoords.x * 128) + anchor_x, (roomCoords.y * -128) + anchor_y);
+    }
     //transition from one room to another
     async void Transition()
     {
@@ -85,7 +89,8 @@ public class RoomManager : MonoBehaviour
                 PlayerController playerController = player.GetComponent<PlayerController>();
                 roomChangeBegin.AddListener(playerController.Suspend);
                 roomChangeEnd.AddListener(playerController.Unsuspend);
-                //playerController.Suspend();
+
+                GameObject.FindObjectOfType<OverworldCamera>().AssignRoomManager(this); 
                 break;
         }
     }
