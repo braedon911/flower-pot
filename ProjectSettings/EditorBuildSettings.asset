@@ -6,13 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Persistent.unity
+    path: Assets/Scenes/Core/Persistent.unity
     guid: a2098ac9e6b7466469e311e41c67db4b
   - enabled: 1
-    path: Assets/Scenes/Start.unity
+    path: Assets/Scenes/Core/Start.unity
     guid: 5a3e5ed2a743de54b9fcdfc4b4515fe4
   - enabled: 1
-    path: Assets/Scenes/Overworld.unity
+    path: Assets/Scenes/Core/Overworld.unity
     guid: 504176dcdbac0f7439f46abb4285fd36
   - enabled: 1
     path: Assets/Scenes/_0_1.unity
@@ -23,4 +23,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/_1_0.unity
     guid: 9f0c06994d0b5134e8896eb7b66be07a
+  - enabled: 1
+    path: Assets/Scenes/_1_2.unity
+    guid: be8262855feb9cc40a00ec78301773aa
+  - enabled: 1
+    path: Assets/Scenes/_0_2.unity
+    guid: 13b1967a77268d843aae9dde960f15c4
   m_configObjects: {}

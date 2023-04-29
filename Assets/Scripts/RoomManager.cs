@@ -1,8 +1,8 @@
-using LDtkUnity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LDtkUnity;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,7 +19,7 @@ public class RoomManager : MonoBehaviour
     public int TransitionTimer { get { return transition_timer; } set { transition_timer = value; } }
     //life is pain. i hate.
     const string anchorRoom = "_0_0";
-    const string firstRoom = "_0_1";
+    const string firstRoom = "_1_2";
     const string overworld = "Overworld";
     const string startScreen = "Start";
 
@@ -37,25 +37,10 @@ public class RoomManager : MonoBehaviour
     {
         return new Vector3((roomCoords.x * 128) + anchor_x, (roomCoords.y * -128) + anchor_y);
     }
-    //transition from one room to another
-    async void Transition()
-    {
-        roomChangeBegin.Invoke();
-        for (int i = 0; i < transition_timer; i++)
-        {
-            await Task.Yield();
-        }
-        roomChangeEnd.Invoke();
-    }
     void Start()
     {
         AsyncOperation sceneLoader = SceneManager.LoadSceneAsync(anchorRoom, LoadSceneMode.Additive);
         sceneLoader.completed += EstablishAnchor;
-    }
-    public void RoomChangeRoutine()
-    {
-        LoadRoom(playerGridTracker.X, playerGridTracker.Y);
-        Transition();
     }
     void EstablishAnchor(AsyncOperation operation)
     {
@@ -73,9 +58,25 @@ public class RoomManager : MonoBehaviour
     {
         SceneManager.sceneLoaded += SceneChecker;
     }
+    public void RoomChangeRoutine()
+    {
+        LoadRoom(playerGridTracker.X, playerGridTracker.Y);
+        Transition();
+    }
+
+    //transition from one room to another
+    async void Transition()
+    {
+        roomChangeBegin.Invoke();
+        for (int i = 0; i < transition_timer; i++)
+        {
+            await Task.Yield();
+        }
+        roomChangeEnd.Invoke();
+    }
     void SceneChecker(Scene scene, LoadSceneMode mode)
     {
-        if (FindPlayer(scene, mode))
+        if (playerGridTracker == null && FindPlayer(scene, mode))
         {
             playerGridTracker = player.GetComponent<RoomGridTracker>();
             playerGridTracker.roomChange.AddListener(RoomChangeRoutine);
@@ -110,12 +111,12 @@ public class RoomManager : MonoBehaviour
     {
         return $"_{x}_{y}";
     }
-    void LoadRoom(int x, int y)
+    private void LoadRoom(int x, int y)
     {
         string roomToLoad = GetNameFromCoord(x,y);
         if (!SceneManager.GetSceneByName(roomToLoad).isLoaded)
         {
-            SceneManager.LoadScene(roomToLoad, LoadSceneMode.Additive);
+            AsyncOperation sceneLoading = SceneManager.LoadSceneAsync(roomToLoad, LoadSceneMode.Additive);
         }
     }
 }

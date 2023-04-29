@@ -15,25 +15,21 @@ public class OverworldCamera : MonoBehaviour
     {
         this.roomManager = roomManager;
         roomManager.roomChangeBegin.AddListener(CallCameraPan);
-        roomManager.roomChangeEnd.AddListener(SnapCameraPan);
     }
     private void Start()
     {
         scrollSpeed = roomManager.TransitionTimer;
     }
 
-    void SnapCameraPan()
-    {
-        //transform.position = (Vector3)(Vector2)roomGridTracker.Position + cameraOffset;
-        //StopCoroutine("CameraPan");
-        //cameraPanIsRunning = false;
-    }
+    bool cameraPanIsRunning = false;
     void CallCameraPan()
     {
-        if (cameraPanIsRunning) StartCoroutine("CameraPan");
-        cameraPanIsRunning = true;
+        if (!cameraPanIsRunning)
+        {
+            StartCoroutine("CameraPan");
+            cameraPanIsRunning = true;
+        }
     }
-    bool cameraPanIsRunning = false;
     IEnumerator CameraPan()
     {
         Vector3 start = transform.position;
