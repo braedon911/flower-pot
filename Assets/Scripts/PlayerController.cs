@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     Animator animator;
     GameObject rootsObject;
     StateMachine stateMachine;
+    [SerializeField] AudioSource audioSource;
     #endregion
 
     #region physics values
@@ -211,6 +212,9 @@ public class PlayerController : MonoBehaviour
                 break;
             //exit
             case 3:
+                //TODO relocate audio to a separate component
+                audioSource.pitch = Random.Range(.8f, 1.2f);
+                audioSource.Play();
                 rootsObject.SetActive(false);
                 if (stateMachine.stateTimer > 5) stateMachine.ChangeState("StateFall");
 

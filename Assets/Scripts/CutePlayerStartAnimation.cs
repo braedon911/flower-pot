@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +17,7 @@ public class CutePlayerStartAnimation : MonoBehaviour
 
     Coroutine animationCoroutine;
 
+    [SerializeField] AudioSource audioSource;
     private void Start()
     {
         originalPosition = transform.position;
@@ -46,6 +48,7 @@ public class CutePlayerStartAnimation : MonoBehaviour
             yield return null;
         }
         animator.Play("Grow Stop");
+        audioSource.Play();
         while(timer < animationLength + 30)
         {
             timer++;
