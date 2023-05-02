@@ -12,10 +12,17 @@ public class CutePlayerStartAnimation : MonoBehaviour
     public int transitionFrame = 6;
     public GameObject rootsObject;
 
-    public UnityEvent finishedAnimation = new UnityEvent();
+    Vector3 originalPosition;
+
+    Coroutine animationCoroutine;
+
+    private void Start()
+    {
+        originalPosition = transform.position;
+    }
     public void DoAnimation()
     {
-        StartCoroutine("Animation");
+        if (animationCoroutine==null) animationCoroutine = StartCoroutine("Animation");
     }
     IEnumerator Animation()
     {
@@ -44,6 +51,13 @@ public class CutePlayerStartAnimation : MonoBehaviour
             timer++;
             yield return null;
         }
-        finishedAnimation.Invoke();
+    }
+    public void CancelAnimation()
+    {
+        animator.Play("Idle");
+        StopCoroutine(animationCoroutine);
+        animationCoroutine = null;
+        transform.position = originalPosition;
+        rootsObject.transform.localScale = new Vector3(1, 0, 1);
     }
 }

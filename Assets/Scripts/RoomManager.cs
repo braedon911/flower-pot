@@ -83,8 +83,8 @@ public class RoomManager : MonoBehaviour
         }
         switch (scene.name)
         {
+            //this used to handle starting the game
             case startScreen:
-                GameObject.Find("Tree Guy Prop")?.GetComponent<CutePlayerStartAnimation>().finishedAnimation.AddListener(LoadOverworld);
                 break;
             case overworld:
                 PlayerController playerController = player.GetComponent<PlayerController>();

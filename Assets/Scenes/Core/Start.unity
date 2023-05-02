@@ -294,9 +294,6 @@ MonoBehaviour:
   animationLength: 33
   transitionFrame: 12
   rootsObject: {fileID: 1633298677}
-  finishedAnimation:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!212 &370461709
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -647,6 +644,50 @@ RectTransform:
   m_AnchoredPosition: {x: 64, y: 64}
   m_SizeDelta: {x: 128, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &2097413763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2097413765}
+  - component: {fileID: 2097413764}
+  m_Layer: 0
+  m_Name: LoadOverworld
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2097413764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2097413763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eedbd38d16582434880f9fd259c03acb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2097413765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2097413763}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 201.77634, y: -53.716816, z: 90.80501}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2142557974
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,6 +698,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2142557976}
   - component: {fileID: 2142557975}
+  - component: {fileID: 2142557977}
   m_Layer: 0
   m_Name: StartScreen
   m_TagString: Untagged
@@ -706,6 +748,65 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2142557977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2142557974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 787096b721a1f57419bfbdf0da2e9f50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: Fire1
+  countUntil: 60
+  finished:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2097413764}
+        m_TargetAssemblyTypeName: LoadOverworld, Assembly-CSharp
+        m_MethodName: RequestLoadOverworld
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  cancelled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 370461708}
+        m_TargetAssemblyTypeName: CutePlayerStartAnimation, Assembly-CSharp
+        m_MethodName: CancelAnimation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  started:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 370461708}
+        m_TargetAssemblyTypeName: CutePlayerStartAnimation, Assembly-CSharp
+        m_MethodName: DoAnimation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!20 &6546519412889655613
 Camera:
   m_ObjectHideFlags: 0
